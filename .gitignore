@@ -3,4 +3,3 @@ __pycache__/
 password.txt
 work.py
 *.csv
-saved_variables.py
