@@ -44,13 +44,10 @@ def plot_price_change():
             trend,
             trend_coef,
         ) = calculation_before_plotting()
-        fig, a_x = plt.plot(figsize=(15, 8), dpi=80)
+        fig, a_x = plt.subplots(figsize=(15, 8), dpi=80)
         a_x.set(ylabel="Price [gold]")
-        title = (
-            ITEM_NAME
-            + "\nPrice Over Time"
-        )
-        plt.title(title,loc="left",fontsize=18, pad=20)
+        title = ITEM_NAME + "\nPrice Over Time"
+        plt.title(title, loc="left", fontsize=18, pad=20)
         a_x.plot(x_axis, y_axis, linestyle="dashed", marker="o", color="purple")
 
         a_x.xaxis.set_major_formatter(DateFormatter("%m-%d-%Y"))
@@ -60,22 +57,24 @@ def plot_price_change():
 
         if trend_coef > 0:
             trend_string = "Rising"
-            color="green"
+            color = "green"
         elif trend_coef == 0:
             trend_string = "Stable"
-            color="yellow"
+            color = "yellow"
         elif trend_coef < 0:
             trend_string = "Decreasing"
-            color="red"
+            color = "red"
 
-        price_info = ("Latest price: "
+        price_info = (
+            "Latest price: "
             + str(latest_price)
             + " Gold"
             + "\nDated: "
             + str(latest_price_date)
-            + "\nPrice trend: ")
+            + "\nPrice trend: "
+        )
         plt.gcf().text(0.7, 0.9, price_info, fontsize=14)
-        plt.gcf().text(0.775, 0.9, trend_string, fontsize=14,color=color)
+        plt.gcf().text(0.775, 0.9, trend_string, fontsize=14, color=color)
 
         plt.plot(x_axis, trend(x_axis), "r--")
 
@@ -114,6 +113,7 @@ def calculation_before_plotting():
 
         return x_axis, y_axis, latest_price, latest_price_date, trend, trend_coef
     return None
+
 
 def main():
     """
