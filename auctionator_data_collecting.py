@@ -60,7 +60,6 @@ def auctionator_data_processing():
                                 item_name += res[line_num2]
                                 item_name += " "
                         item_name = "".join(item_name.rstrip().lstrip())
-                        writer.writerow("")
                         writer.writerow([auc_lst_time_date, item_name, item_price])
                     if line_num1 == end_num:
                         break
