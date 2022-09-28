@@ -4,6 +4,7 @@ Calculate values for graph
 Graph data
 """
 
+from datetime import datetime
 import os
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -104,7 +105,7 @@ def calculation_before_plotting():
         # Change from bronze to gold currency
         y_axis = [x1 / 10000 for x1 in y_series]
 
-        latest_price_date = min(dates)
+        latest_price_date = series.index.values[-1]
         latest_price = y_axis[-1]
 
         # Define trend line for prices and coefficient
