@@ -6,3 +6,6 @@ work.py
 saved_variables.py
 *.png
 .vscode/
+*.txt
+*.env
+*.jpg

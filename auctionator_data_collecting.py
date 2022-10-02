@@ -25,6 +25,36 @@ TARGET_FILE_PATH = r"C:\Users\krzys\Desktop\Work\Auctionator.lua"
 
 MERGED_FILE = r"C:\Users\krzys\Desktop\Work\auctionator_output_merged.csv"
 
+SAVED_VARIABLES = r"C:\Users\krzys\Desktop\Work\saved_variables.py"
+
+
+def auc_entry_process():
+    """
+    Open Auctionator.lua file
+    Search for line number containing start, end and auction last time number
+    Return file creation time unix/date format
+    """
+    # Get needed line numbers for start, end and scan time
+    with open(AUCTIONATOR_DATA_FILE_NAME, "r", encoding="utf-8") as file_1:
+        for line_num, line in enumerate(file_1, 1):
+            if "AUCTIONATOR_PRICE_DATABASE" in line:
+                begin_num = line_num + 2
+            elif "AUCTIONATOR_MEAN_PRICE_DATABASE" in line:
+                end_num = line_num - 3
+            elif "AUCTIONATOR_LAST_SCAN_TIME" in line:
+                auc_lst_res = re.sub("[" + string.punctuation + "]", "", line).split()
+
+        # Convert full line to auctioner last scan time in unix format
+        for line_num, _ in enumerate(auc_lst_res):
+            if auc_lst_res[line_num].isnumeric():
+                auc_lst_time_unix = auc_lst_res[line_num]
+
+        # Convert Auctionator Last Scan Time from unix time format to date time format
+        auc_lst_time_date = datetime.fromtimestamp(float(auc_lst_time_unix)).strftime(
+            "%d-%m-%Y %H:%M:%S"
+        )
+    return begin_num, end_num, auc_lst_time_unix, auc_lst_time_date
+
 
 def auctionator_data_processing():
     """
@@ -68,13 +98,15 @@ def auctionator_data_processing():
             )
 
             os.remove(last_appended_file)
+            sub_str = "last_appended_file = "
+            sub_str.split(last_appended_file)
 
-            with open(
-                "saved_variables.py",
-                "w",
-                encoding="utf-8",
-            ) as file_3:
-                file_3.write("last_appended_file = " '"' + file_name + '"')
+            with open(SAVED_VARIABLES) as f:
+                s = f.read()
+
+            with open(SAVED_VARIABLES, "w") as f:
+                s = s.replace(last_appended_file, file_name)
+                f.write(s)
 
         else:
             print("File is already merged")
@@ -87,34 +119,6 @@ def copy_file():
     Open Auctionator.lua and copy data to created auctionator_output.csv file
     """
     shutil.copyfile(ORIGINAL_FILE_PATH, TARGET_FILE_PATH)
-
-
-def auc_entry_process():
-    """
-    Open Auctionator.lua file
-    Search for line number containing start, end and auction last time number
-    Return file creation time unix/date format
-    """
-    # Get needed line numbers for start, end and scan time
-    with open(AUCTIONATOR_DATA_FILE_NAME, "r", encoding="utf-8") as file_1:
-        for line_num, line in enumerate(file_1, 1):
-            if "Lordaeron_Alliance" in line:
-                begin_num = line_num
-            elif "Lordaeron_Horde" in line:
-                end_num = line_num - 2
-            elif "AUCTIONATOR_LAST_SCAN_TIME" in line:
-                auc_lst_res = re.sub("[" + string.punctuation + "]", "", line).split()
-
-        # Convert full line to auctioner last scan time in unix format
-        for line_num, _ in enumerate(auc_lst_res):
-            if auc_lst_res[line_num].isnumeric():
-                auc_lst_time_unix = auc_lst_res[line_num]
-
-        # Convert Auctionator Last Scan Time from unix time format to date time format
-        auc_lst_time_date = datetime.fromtimestamp(float(auc_lst_time_unix)).strftime(
-            "%d-%m-%Y %H:%M:%S"
-        )
-    return begin_num, end_num, auc_lst_time_unix, auc_lst_time_date
 
 
 def main():

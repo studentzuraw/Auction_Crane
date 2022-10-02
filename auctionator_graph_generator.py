@@ -4,7 +4,6 @@ Calculate values for graph
 Graph data
 """
 
-from datetime import datetime
 import os
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -14,8 +13,6 @@ import numpy as np
 
 MERGED_FILE = r"C:\Users\krzys\Desktop\Work\auctionator_output_merged.csv"
 ITEM_DATA = r"C:\Users\krzys\Desktop\Work\item_data.csv"
-
-ITEM_NAME = "Blood Queens Crimson Choker"
 
 
 def generate_item_data():
@@ -27,27 +24,20 @@ def generate_item_data():
         # Extract data for specified item
         data_frame = pd.read_csv(MERGED_FILE)
         data_frame.sort_values(by="DATE OF SCAN")
-        item = data_frame[data_frame["ITEM NAME"] == ITEM_NAME]
+        item = data_frame[data_frame["ITEM NAME"] == given_item_name]
         item.to_csv(ITEM_DATA, encoding="utf-8", index=False)
+        print("Generating item data for "+given_item_name)
 
 
-def plot_price_change():
+def plot_price_change(x_axis, y_axis, latest_price, latest_price_date, trend, trend_coef):
     """
     Plotting function
     """
     if os.path.isfile(ITEM_DATA):
 
-        (
-            x_axis,
-            y_axis,
-            latest_price,
-            latest_price_date,
-            trend,
-            trend_coef,
-        ) = calculation_before_plotting()
-        fig, a_x = plt.subplots(figsize=(15, 8), dpi=80)
+        _, a_x = plt.subplots(figsize=(15, 8), dpi=80)
         a_x.set(ylabel="Price [gold]")
-        title = ITEM_NAME + "\nPrice Over Time"
+        title = given_item_name + "\nPrice Over Time"
         plt.title(title, loc="left", fontsize=18, pad=20)
         a_x.plot(x_axis, y_axis, linestyle="dashed", marker="o", color="purple")
 
@@ -66,24 +56,27 @@ def plot_price_change():
             trend_string = "Decreasing"
             color = "red"
 
+        latest_price = latest_price*10000
+        gold = int(latest_price/10000)
+        silver = int((latest_price-(gold*10000))/100)
+        bronze = int(latest_price-(gold*10000)-(silver*100))
+        latest_price_prettyfied = str(gold)+" Gold "+str(silver)+" Silver "+str(bronze)+" Bronze "
         price_info = (
             "Latest price: "
-            + str(latest_price)
-            + " Gold"
+            + str(latest_price_prettyfied)
             + "\nDated: "
             + str(latest_price_date)
             + "\nPrice trend: "
         )
-        plt.gcf().text(0.7, 0.9, price_info, fontsize=14)
-        plt.gcf().text(0.775, 0.9, trend_string, fontsize=14, color=color)
+        plt.gcf().text(0.65, 0.91, price_info, fontsize=12)
+        plt.gcf().text(0.715, 0.91, trend_string, fontsize=12, color=color)
 
         plt.plot(x_axis, trend(x_axis), "r--")
+        print("Created plot for "+given_item_name)
+        plt.savefig("graph.png")
 
-        plt.savefig("foo.png")
-        plt.show()
 
-
-def calculation_before_plotting():
+def calculation_before_plotting(output_item_name):
     """
     Calculation function
 
@@ -94,8 +87,10 @@ def calculation_before_plotting():
         latest_price_date: date of item latest price
         trend: trend line for prices
     """
+    global given_item_name
+    given_item_name = output_item_name
     if os.path.isfile(ITEM_DATA):
-
+        generate_item_data()
         series = pd.read_csv(ITEM_DATA, header=0, index_col=0)
 
         dates = series.index.values
@@ -111,18 +106,6 @@ def calculation_before_plotting():
         # Define trend line for prices and coefficient
         trend = np.poly1d(np.polyfit(x_axis, y_axis, 1))
         trend_coef = trend.coef[0]  # Polish: Współczynnik kierunkowy prostej
-
+        print("Calulating before plotting for "+given_item_name)
+        plot_price_change(x_axis, y_axis, latest_price, latest_price_date, trend, trend_coef)
         return x_axis, y_axis, latest_price, latest_price_date, trend, trend_coef
-    return None
-
-
-def main():
-    """
-    Main Function to start functions
-    """
-    generate_item_data()
-    plot_price_change()
-
-
-if __name__ == "__main__":
-    main()
