@@ -16,7 +16,7 @@ def main():
     """
     Step by step new Auctionator.lua gathering
     """
-    while(True):
+    while True:
         with open("password.txt", "r", encoding="utf-8") as file_1:
             password = file_1.read()
 
@@ -31,9 +31,7 @@ def main():
             print("Num Lock was turned on, status was not changed")
 
         # open World of Worcraft.exe
-        subprocess.Popen(
-            r"C:\wow\World of Warcraft 3.3.5a (no install)\Wow"
-        )  # Consider using 'with' for resource-allocating operations (consider-using-with) - pylint
+        subprocess.Popen(r"C:\wow\World of Warcraft 3.3.5a (no install)\Wow")
 
         time.sleep(15)
 
@@ -70,12 +68,11 @@ def main():
         keyboard.write(r"/exit")
         time.sleep(0.5)
         keyboard.send("enter")
-        
+
         print("Finish")
         time.sleep(10)
         auctionator_data_collecting.main()
         time.sleep(7200)
-    
 
 
 def move_click_wait(x_axis, y_axis, time_value):

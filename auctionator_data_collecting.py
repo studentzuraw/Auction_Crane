@@ -101,12 +101,12 @@ def auctionator_data_processing():
             sub_str = "last_appended_file = "
             sub_str.split(last_appended_file)
 
-            with open(SAVED_VARIABLES) as f:
-                s = f.read()
+            with open(SAVED_VARIABLES, "r", encoding="utf-8") as file_3:
+                saved_vars = file_3.read()
 
-            with open(SAVED_VARIABLES, "w") as f:
-                s = s.replace(last_appended_file, file_name)
-                f.write(s)
+            with open(SAVED_VARIABLES, "w", encoding="utf-8") as file_3:
+                saved_vars = saved_vars.replace(last_appended_file, file_name)
+                file_3.write(saved_vars)
 
         else:
             print("File is already merged")
