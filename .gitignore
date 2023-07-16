@@ -1,0 +1,11 @@
+Backup/
+__pycache__/
+password.txt
+work.py
+*.csv
+saved_variables.py
+*.png
+.vscode/
+*.txt
+*.env
+*.jpg
